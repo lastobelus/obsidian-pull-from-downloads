@@ -1,0 +1,10 @@
+- [ ] Add a LICENSE (OSI-approved) at repo root
+- [ ] Ensure README.md describes purpose/usage/build/install
+- [ ] Verify manifest.json has id/name/version/minAppVersion/main
+- [ ] Create a GitHub release with attached main.js, manifest.json, styles.css
+- [ ] Keep release/tag version aligned with manifest.json
+- [ ] (Optional) Add versions.json after first release (update when minAppVersion changes)
+- [ ] Submit PR to obsidianmd/obsidian-releases: append entry to community-plugins.json
+- [ ] Use concise description (<100 chars) in community-plugins.json
+- [ ] Complete PR checklist and ensure “Community Plugin” category
+- [ ] Wait for bot validation; address any issues until “Ready for review”
