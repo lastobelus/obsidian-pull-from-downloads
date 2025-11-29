@@ -5,7 +5,7 @@ Quickly pull a recent file (or extract a zip) from your Downloads folder into an
 ## What it does
 - Adds `Pull from Downloads…` to the file explorer context menu for both folders and files (files use their parent folder).
 - Shows your most recent Downloads (newest first), with optional whitelist/blacklist filters and a configurable list length.
-- Moves (default) or copies the chosen file into the target folder. If the file is a `.zip`, it is extracted into that folder; existing filenames are suffixed to avoid overwrites.
+- Moves (default) or copies the chosen file into the target folder. If the file is a `.zip`, it is extracted into that folder; collisions can either be versioned (default) or overwritten.
 - Refreshes the file explorer and shows a brief notice once done. Errors are surfaced with notices.
 
 Perfect for AI-generated outputs: have your AI tool save a multi-file project as a zip in `~/Downloads`, then use this plugin to pull and extract it into the right spot in your vault in two clicks.
@@ -32,9 +32,12 @@ Manual install into a vault:
 - **Behavior**: Move (default) or Copy.
 - **Whitelist extensions**: comma/space separated; empty means no whitelist.
 - **Blacklist extensions**: comma/space separated; empty means no blacklist. Whitelist wins if both are set.
+- **Zip collision handling**: Version existing files (default) or Overwrite existing files.
 
 ### Zip collisions
-When extracting zips, if a file already exists in the target folder, the plugin appends `-1`, `-2`, … before the extension to avoid overwriting.
+When extracting zips, you can choose:
+- **Version existing files** (default): append `-1`, `-2`, … before the extension.
+- **Overwrite existing files**: replace files of the same path.
 
 ## Develop
 - `npm run dev` watches and rebuilds.

@@ -21,6 +21,7 @@ interface PullSettings {
   behavior: "move" | "copy";
   whitelist: string[];
   blacklist: string[];
+  zipCollision: "version" | "overwrite";
 }
 
 const DEFAULT_SETTINGS: PullSettings = {
@@ -28,7 +29,8 @@ const DEFAULT_SETTINGS: PullSettings = {
   listLimit: 10,
   behavior: "move",
   whitelist: [],
-  blacklist: []
+  blacklist: [],
+  zipCollision: "version"
 };
 
 interface DownloadItem {
@@ -100,7 +102,7 @@ export default class PullFromDownloadsPlugin extends Plugin {
       const isZip = path.extname(item.name).toLowerCase() === ".zip";
 
       if (isZip) {
-        await extractZip(item.absolutePath, targetDir);
+        await extractZip(item.absolutePath, targetDir, this.settings.zipCollision);
       } else {
         await moveOrCopyFile(item.absolutePath, targetDir, this.settings.behavior);
       }
@@ -239,6 +241,20 @@ class PullSettingsTab extends PluginSettingTab {
             await this.plugin.saveSettings();
           })
       );
+
+    new Setting(containerEl)
+      .setName("Zip collision handling")
+      .setDesc("Choose how to handle existing files when extracting zips.")
+      .addDropdown((dropdown) =>
+        dropdown
+          .addOption("version", "Version existing files")
+          .addOption("overwrite", "Overwrite existing files")
+          .setValue(this.plugin.settings.zipCollision)
+          .onChange(async (value: "version" | "overwrite") => {
+            this.plugin.settings.zipCollision = value;
+            await this.plugin.saveSettings();
+          })
+      );
   }
 }
 
@@ -277,7 +293,8 @@ function normalizeSettings(settings: PullSettings): PullSettings {
     listLimit: clampNumber(settings.listLimit, 1, 100, DEFAULT_SETTINGS.listLimit),
     behavior: settings.behavior === "copy" ? "copy" : "move",
     whitelist: parseExtList(formatExtList(settings.whitelist || [])),
-    blacklist: parseExtList(formatExtList(settings.blacklist || []))
+    blacklist: parseExtList(formatExtList(settings.blacklist || [])),
+    zipCollision: settings.zipCollision === "overwrite" ? "overwrite" : "version"
   };
 }
 
@@ -345,7 +362,11 @@ async function moveOrCopyFile(source: string, targetDir: string, behavior: "move
   }
 }
 
-async function extractZip(zipPath: string, targetDir: string) {
+async function extractZip(
+  zipPath: string,
+  targetDir: string,
+  strategy: "version" | "overwrite"
+) {
   const zip = new AdmZip(zipPath);
   const entries = zip.getEntries();
 
@@ -358,7 +379,8 @@ async function extractZip(zipPath: string, targetDir: string) {
       continue;
     }
 
-    const finalPath = await uniquePath(destPath);
+    const finalPath =
+      strategy === "overwrite" ? destPath : await uniquePath(destPath);
     await ensureDir(path.dirname(finalPath));
     const data = entry.getData();
     await fsp.writeFile(finalPath, data);
@@ -397,4 +419,3 @@ function formatBytes(bytes: number): string {
   const value = bytes / Math.pow(k, i);
   return `${value.toFixed(value >= 10 || i === 0 ? 0 : 1)} ${sizes[i]}`;
 }
-
