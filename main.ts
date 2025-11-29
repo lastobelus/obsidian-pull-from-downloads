@@ -178,19 +178,6 @@ class PullSettingsTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
-      .setName("Extract zip files")
-      .setDesc("If off, zips are moved/copied without extracting.")
-      .addToggle((toggle) =>
-        toggle
-          .setValue(this.plugin.settings.expandZips)
-          .onChange(async (value) => {
-            this.plugin.settings.expandZips = value;
-            await this.plugin.saveSettings();
-            this.display();
-          })
-      );
-
-    new Setting(containerEl)
       .setName("Whitelist extensions")
       .setDesc(
         "Comma/space separated. If set, only these extensions are shown and blacklist is ignored."
@@ -217,6 +204,21 @@ class PullSettingsTab extends PluginSettingTab {
           .onChange(async (value) => {
             this.plugin.settings.blacklist = parseExtList(value);
             await this.plugin.saveSettings();
+          })
+      );
+
+    containerEl.createEl("h3", { text: "Zip files" });
+
+    new Setting(containerEl)
+      .setName("Extract zip files")
+      .setDesc("If off, zips are moved/copied without extracting.")
+      .addToggle((toggle) =>
+        toggle
+          .setValue(this.plugin.settings.expandZips)
+          .onChange(async (value) => {
+            this.plugin.settings.expandZips = value;
+            await this.plugin.saveSettings();
+            this.display();
           })
       );
 
