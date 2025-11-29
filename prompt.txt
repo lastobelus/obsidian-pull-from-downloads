@@ -1,0 +1,154 @@
+You are an expert TypeScript developer building an Obsidian desktop plugin. Work in *full auto* mode and make reasonable assumptions instead of asking questions. Your goal is to produce a working plugin in this repo, including all code, config, and docs needed to build and install it in Obsidian.
+
+### High-level goal
+
+Build an Obsidian plugin that lets the user quickly “pull” a recent file from their Downloads folder into a chosen folder in the vault via the file explorer context menu.
+
+Key user story:
+
+- The user right-clicks on a folder (or a file) in the Obsidian file explorer.
+- A custom context menu item appears (e.g. “Pull from Downloads…”).
+- When the user clicks it:
+  - The plugin shows a list of the most recent N files (default 10) from a configurable “Downloads” directory (default `~/Downloads`).
+  - The user picks one file from this list.
+  - The plugin then moves or copies that file (behavior configurable; default to **move**) into the target folder:
+    - If the user initiated the action on a folder: use that folder.
+    - If initiated on a file: use the file’s enclosing folder.
+  - If the chosen file is a `.zip`, the plugin **extracts** it into the target folder instead of just copying/moving the zip itself.
+
+The intent is to make it easy to pull single files *or* AI-generated multi-file zips (containing directories and multiple files) from `~/Downloads` into the vault with a couple of clicks.
+
+### Required features
+
+1. **Context menu integration**
+   - Add a file explorer context menu item that appears for:
+     - Folders.
+     - Files (in which case you use the file’s parent folder).
+   - Label suggestion: `Pull from Downloads…`.
+   - When invoked, open a modal or dialog showing a list of candidate files from the configured download directory.
+
+2. **Listing and filtering Downloads**
+   - Read contents of the configured Downloads directory (default `~/Downloads`).
+   - Sort files by **last modified time descending** (newest first).
+   - Only include **files**, not directories.
+   - Limit to `N` files where `N` is configurable (default 10).
+   - Support an optional **whitelist** and **blacklist** of file extensions:
+     - Whitelist: if non-empty, only include files whose extension is in the whitelist.
+     - Blacklist: if non-empty, exclude files whose extension is in the blacklist.
+     - Whitelist takes precedence over blacklist if both are configured.
+     - Extensions should be matched case-insensitively and accept user input like `.zip` or `zip`.
+
+3. **Selection UX**
+   - Use a standard Obsidian modal or suggestion modal pattern where the user can:
+     - See a list of recent files from the configured Downloads directory.
+     - See at least filename and last modified time (human-readable). File size is a nice bonus if easy.
+     - Click to select a file.
+     - Cancel if they change their mind.
+   - On cancel, do nothing and close cleanly.
+
+4. **File operations**
+   - When the user selects a file:
+     - Determine the target folder based on the context-click:
+       - If the context item was a folder: use that folder.
+       - If the context item was a file: use that file’s parent folder.
+     - Behavior depends on extension:
+       - If the selected file has `.zip` extension:
+         - **Extract** the contents into the target folder.
+         - Use a Node-compatible zip library (e.g., `adm-zip` or similar) that works in Obsidian’s Electron environment.
+         - Handle errors gracefully (e.g., invalid zip) via a visible notice.
+       - Otherwise:
+         - Move or copy the file into the target folder depending on the plugin setting:
+           - Default: **move** (remove original from Downloads).
+           - Alternative: **copy** (leave original in Downloads).
+     - After the operation:
+       - Refresh the Obsidian file explorer so new files/folders appear.
+       - Show a brief notice like: `Pulled <filename> into <folder>`.
+
+5. **Settings tab**
+   - Implement a standard Obsidian settings tab for this plugin with the following options:
+     - **Downloads directory** (string):
+       - Default: `~/Downloads`.
+       - Support `~` expansion.
+     - **Number of files to list** (integer):
+       - Default: `10`.
+       - Minimum: `1`.
+       - Maximum: `100` (reasonable upper bound).
+     - **Behavior** (move or copy):
+       - Options: `Move` (default), `Copy`.
+     - **Whitelist extensions** (string):
+       - Comma-separated or space-separated list.
+       - Empty string means “no whitelist”.
+     - **Blacklist extensions** (string):
+       - Same parsing rules as whitelist.
+       - Empty string means “no blacklist”.
+   - Normalize and validate settings:
+     - Trim whitespace.
+     - Normalize extensions to consistently include or strip the leading dot internally.
+     - Handle invalid numeric input with fallbacks to defaults.
+
+6. **Zip extraction specifics**
+   - For `.zip` files:
+     - Extract into the target folder without prompting for an extra subfolder (unless the zip itself contains a top-level folder).
+     - For filename collisions:
+       - Either overwrite existing files OR add a suffix (e.g. `-1`, `-2`) to avoid collisions.
+       - Pick one consistent strategy and document it in the README.
+     - Surface extraction errors using Obsidian’s notice system.
+
+7. **Error handling & robustness**
+   - Handle common error cases gracefully:
+     - Downloads directory doesn’t exist or is empty: show a friendly message instead of crashing.
+     - No files pass filters: show “No matching files found”.
+     - Permission issues or file operation errors: show a notice with enough detail for a user to debug.
+   - Use Obsidian’s `Notice` or similar to surface problems.
+
+8. **Documentation for the user**
+   - Create a concise `README.md` that covers:
+     - What the plugin does (one-paragraph overview).
+     - How to install it:
+       - `npm install` (or `pnpm install` / `yarn`; pick one and standardize).
+       - `npm run build` (or equivalent).
+       - Where to copy the built plugin for manual install:
+         - Typically `<vault>/.obsidian/plugins/<plugin-id>`.
+     - How to use:
+       - Right-click a folder or file in the file explorer.
+       - Choose `Pull from Downloads…`.
+       - Choose a recent file from the Downloads list.
+       - If it’s a zip, the plugin extracts it into the folder; otherwise it moves/copies it into the folder.
+     - How this helps with AI-generated outputs:
+       - Explain that users can have an AI tool create a **zip** containing multiple files and subfolders, save it to `~/Downloads`, then use this plugin to “pull” that zip into a chosen folder and extract it.
+       - Emphasize that this makes AI-generated multi-file structures easy to bring into Obsidian.
+
+### Implementation details and expectations
+
+- Use **TypeScript** and follow the style of the official Obsidian sample plugin:
+  - `main.ts`
+  - `manifest.json`
+  - `tsconfig.json`
+  - `package.json`
+  - `styles.css`
+  - Build script.
+- Choose a reasonable plugin ID and name, for example:
+  - ID: `pull-from-downloads`
+  - Name: `Pull from Downloads`
+- Ensure all imports and plugin metadata are valid for Obsidian.
+- Use Node’s filesystem APIs (available in Obsidian’s Electron environment) for file operations and zip handling.
+- Include any minimal type declarations needed so `tsc` does not error.
+- Provide a simple `npm run build` script in `package.json` that builds the plugin into the structure Obsidian expects.
+- Write clean, commented code for the core logic (especially listing/filtering files and handling move/copy vs zip extraction).
+
+### Output requirements
+
+- Create all necessary files in the repo, including but not limited to:
+  - `manifest.json`
+  - `package.json`
+  - `tsconfig.json`
+  - `main.ts`
+  - `styles.css` (can be minimal)
+  - `README.md`
+  - Any helper modules you deem useful (e.g., for path handling or zip extraction).
+- Ensure the project can be installed and built with:
+  - `npm install`
+  - `npm run build`
+- Do not ask me any questions; choose reasonable defaults and implement the full plugin.
+
+When you are done, summarize the file structure and any build/install steps in a brief final message.
