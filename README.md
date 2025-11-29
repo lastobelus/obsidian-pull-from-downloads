@@ -1,8 +1,12 @@
-# Pull from Downloads — Simple ZIP & File Import for Obsidian
+<p align="center">
+  <img src="assets/logo.png" width="120" alt="Pull from Downloads logo" />
+</p>
 
-Right‑click any folder → import the most recent item from your Downloads.
+<h1 align="center">Pull from Downloads — Simple ZIP & File Import for Obsidian</h1>
 
-Zips extract automatically. Files move or copy.
+<h2 align="center">Right‑click any folder → import the most recent item from your Downloads.</h2>
+
+<h2 align="center">Zips extract automatically. Files move or copy.</h2>
 
 ---
 
