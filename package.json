@@ -17,6 +17,7 @@
   "author": "Michael Johnston (with codex)",
   "license": "MIT",
   "devDependencies": {
+    "@types/adm-zip": "^0.5.7",
     "@types/node": "^22.8.4",
     "esbuild": "^0.27.0",
     "obsidian": "^1.6.3",
