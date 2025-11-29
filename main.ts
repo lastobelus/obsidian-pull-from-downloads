@@ -147,12 +147,21 @@ class DownloadSelectModal extends SuggestModal<DownloadItem> {
   }
 
   renderSuggestion(item: DownloadItem, el: HTMLElement) {
-    const title = el.createEl("div", { cls: "suggestion-title" });
-    title.setText(item.name);
+    el.addClass("pfd-suggestion");
 
-    const subtitle = el.createEl("div", { cls: "suggestion-note" });
-    subtitle.setText(
-      `${item.mtime.toLocaleString()} • ${formatBytes(item.size)}`
+    const row = el.createDiv({ cls: "pfd-suggestion__row" });
+    const nameEl = row.createDiv({ cls: "pfd-suggestion__name" });
+    nameEl.setText(item.name);
+
+    const ext = path.extname(item.name).replace(/^\./, "").toUpperCase();
+    if (ext) {
+      const badge = row.createDiv({ cls: "pfd-suggestion__badge" });
+      badge.setText(ext);
+    }
+
+    const meta = el.createDiv({ cls: "pfd-suggestion__meta" });
+    meta.setText(
+      `${formatRelative(item.mtime)} • ${item.mtime.toLocaleString()} • ${formatBytes(item.size)}`
     );
   }
 
@@ -422,4 +431,19 @@ function formatBytes(bytes: number): string {
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   const value = bytes / Math.pow(k, i);
   return `${value.toFixed(value >= 10 || i === 0 ? 0 : 1)} ${sizes[i]}`;
+}
+
+function formatRelative(date: Date): string {
+  const diffMs = Date.now() - date.getTime();
+  const sec = Math.floor(diffMs / 1000);
+  const min = Math.floor(sec / 60);
+  const hr = Math.floor(min / 60);
+  const day = Math.floor(hr / 24);
+
+  if (sec < 60) return "just now";
+  if (min < 60) return `${min} min ago`;
+  if (hr < 24) return `${hr} hr${hr === 1 ? "" : "s"} ago`;
+  if (day < 7) return `${day} day${day === 1 ? "" : "s"} ago`;
+
+  return date.toLocaleDateString();
 }

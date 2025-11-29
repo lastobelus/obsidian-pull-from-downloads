@@ -1,1 +1,30 @@
-/* Minimal styles; modal uses Obsidian defaults. */
+.pfd-suggestion {
+  padding: 4px 8px;
+}
+
+.pfd-suggestion__row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.pfd-suggestion__name {
+  flex: 1;
+  word-break: break-word;
+}
+
+.pfd-suggestion__badge {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 8px;
+  background: var(--interactive-hover);
+  color: var(--text-on-accent);
+  text-transform: uppercase;
+}
+
+.pfd-suggestion__meta {
+  color: var(--text-muted);
+  font-size: 12px;
+  margin-top: 2px;
+}
