@@ -218,7 +218,9 @@ class PullSettingsTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("Whitelist extensions")
-      .setDesc("Comma or space separated; empty means no whitelist.")
+      .setDesc(
+        "Comma/space separated. If set, only these extensions are shown and blacklist is ignored."
+      )
       .addText((text) =>
         text
           .setPlaceholder("zip, pdf, png")
@@ -231,7 +233,9 @@ class PullSettingsTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("Blacklist extensions")
-      .setDesc("Comma or space separated; empty means no blacklist.")
+      .setDesc(
+        "Comma/space separated. Ignored when whitelist is non-empty. Leave whitelist empty to use blacklist."
+      )
       .addText((text) =>
         text
           .setPlaceholder("tmp, crdownload")

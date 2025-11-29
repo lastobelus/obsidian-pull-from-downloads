@@ -33,8 +33,8 @@ Manual install into a vault:
 - **Downloads directory**: default `~/Downloads`; `~` is expanded.
 - **Number of files**: default 10 (1–100).
 - **Behavior**: Move (default) or Copy.
-- **Whitelist extensions**: comma/space separated; empty means no whitelist.
-- **Blacklist extensions**: comma/space separated; empty means no blacklist. Whitelist wins if both are set.
+- **Whitelist extensions**: comma/space separated; if set, only these extensions show and blacklist is ignored.
+- **Blacklist extensions**: comma/space separated; ignored when whitelist is set. Leave whitelist empty to rely on blacklist.
 - **Zip collision handling**: Version existing files (default) or Overwrite existing files.
 
 ### Zip collisions
