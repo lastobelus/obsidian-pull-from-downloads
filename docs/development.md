@@ -1,8 +1,8 @@
-## Development Notes
+# Development Notes
 
 This document contains all technical details for contributors and future maintainers.
 
-### Build & Install
+## Build & Install
 ```bash
 npm install
 npm run build
@@ -17,14 +17,14 @@ Manual install:
 ```
 3. Enable plugin in Obsidian.
 
-### What It Does
+## What It Does
 - Adds context menu item.
 - Lists recent Downloads with filters.
 - Moves/copies or extracts into target.
 - Handles collisions (version/overwrite).
 - Notifies user and refreshes explorer.
 
-### Settings
+## Settings
 - Downloads dir
 - Number of files
 - Move/Copy
@@ -32,6 +32,6 @@ Manual install:
 - Extract ZIPs
 - Collision handling
 
-### Code Structure
+## Code Structure
 - Source: `main.ts`
 - Build output: `main.js` (plugin root)
