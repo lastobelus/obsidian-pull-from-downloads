@@ -147,17 +147,17 @@ class DownloadSelectModal extends SuggestModal<DownloadItem> {
   }
 
   renderSuggestion(item: DownloadItem, el: HTMLElement) {
-    const row = el.createDiv({ cls: "pfd-row" });
-    const nameEl = row.createDiv({ cls: "pfd-name" });
+    const row = el.createDiv({ cls: "pull-dl-row" });
+    const nameEl = row.createDiv({ cls: "pull-dl-name" });
     nameEl.setText(item.name);
 
     const ext = path.extname(item.name).replace(/^\./, "").toUpperCase();
     if (ext) {
-      const badge = row.createDiv({ cls: "pfd-badge" });
+      const badge = row.createDiv({ cls: "pull-dl-badge" });
       badge.setText(ext);
     }
 
-    const meta = el.createDiv({ cls: "pfd-meta" });
+    const meta = el.createDiv({ cls: "pull-dl-meta" });
     meta.setText(
       `${formatRelative(item.mtime)} • ${item.mtime.toLocaleString()} • ${formatBytes(item.size)}`
     );
