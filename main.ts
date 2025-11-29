@@ -171,8 +171,8 @@ class PullSettingsTab extends PluginSettingTab {
           .addOption("move", "Move")
           .addOption("copy", "Copy")
           .setValue(this.plugin.settings.behavior)
-          .onChange(async (value: "move" | "copy") => {
-            this.plugin.settings.behavior = value;
+          .onChange(async (value) => {
+            this.plugin.settings.behavior = value as "move" | "copy";
             await this.plugin.saveSettings();
           })
       );
@@ -234,8 +234,8 @@ class PullSettingsTab extends PluginSettingTab {
           .addOption("version", "Version existing files")
           .addOption("overwrite", "Overwrite existing files")
           .setValue(this.plugin.settings.zipCollision)
-          .onChange(async (value: "version" | "overwrite") => {
-            this.plugin.settings.zipCollision = value;
+          .onChange(async (value) => {
+            this.plugin.settings.zipCollision = value as "version" | "overwrite";
             await this.plugin.saveSettings();
           })
       )
