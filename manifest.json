@@ -6,5 +6,6 @@
   "description": "Quickly pull recent files or zips from your Downloads folder into the vault via the file explorer context menu.",
   "author": "Code (ChatGPT)",
   "authorUrl": "https://github.com/openai",
+  "main": "main.js",
   "isDesktopOnly": true
 }
