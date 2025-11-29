@@ -7,7 +7,7 @@ Author: Michael Johnston (with codex)
 ## What it does
 - Adds `Pull from Downloads…` to the file explorer context menu for both folders and files (files use their parent folder).
 - Shows your most recent Downloads (newest first), with optional whitelist/blacklist filters and a configurable list length.
-- Moves (default) or copies the chosen file into the target folder. If the file is a `.zip`, it is extracted into that folder; collisions can either be versioned (default) or overwritten.
+- Moves (default) or copies the chosen file into the target folder. Zip extraction is optional (on by default); collisions can either be versioned (default) or overwritten.
 - Refreshes the file explorer and shows a brief notice once done. Errors are surfaced with notices.
 
 Perfect for AI-generated outputs: have your AI tool save a multi-file project as a zip in `~/Downloads`, then use this plugin to pull and extract it into the right spot in your vault in two clicks.
@@ -37,6 +37,7 @@ Manual install into a vault:
 - **Behavior**: Move (default) or Copy.
 - **Whitelist extensions**: comma/space separated; if set, only these extensions show and blacklist is ignored.
 - **Blacklist extensions**: comma/space separated; ignored when whitelist is set. Leave whitelist empty to rely on blacklist.
+- **Extract zip files**: on by default; if off, zips are moved/copied as-is.
 - **Zip collision handling**: Version existing files (default) or Overwrite existing files.
 
 ### Zip collisions

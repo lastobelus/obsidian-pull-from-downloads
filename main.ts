@@ -22,6 +22,7 @@ interface PullSettings {
   whitelist: string[];
   blacklist: string[];
   zipCollision: "version" | "overwrite";
+  expandZips: boolean;
 }
 
 const DEFAULT_SETTINGS: PullSettings = {
@@ -30,7 +31,8 @@ const DEFAULT_SETTINGS: PullSettings = {
   behavior: "move",
   whitelist: [],
   blacklist: [],
-  zipCollision: "version"
+  zipCollision: "version",
+  expandZips: true
 };
 
 interface DownloadItem {
@@ -80,9 +82,14 @@ export default class PullFromDownloadsPlugin extends Plugin {
       return;
     }
 
-    const modal = new DownloadSelectModal(this.app, candidates, async (item) => {
-      await this.processSelection(item, targetFolder);
-    });
+    const modal = new DownloadSelectModal(
+      this.app,
+      candidates,
+      this.settings,
+      async (item) => {
+        await this.processSelection(item, targetFolder);
+      }
+    );
 
     modal.open();
   }
@@ -101,7 +108,7 @@ export default class PullFromDownloadsPlugin extends Plugin {
       await ensureDir(targetDir);
       const isZip = path.extname(item.name).toLowerCase() === ".zip";
 
-      if (isZip) {
+      if (isZip && this.settings.expandZips) {
         await extractZip(item.absolutePath, targetDir, this.settings.zipCollision);
       } else {
         await moveOrCopyFile(item.absolutePath, targetDir, this.settings.behavior);
@@ -135,10 +142,24 @@ class DownloadSelectModal extends SuggestModal<DownloadItem> {
   constructor(
     app: App,
     private items: DownloadItem[],
+    private settings: PullSettings,
     private onSelect: (item: DownloadItem) => void
   ) {
     super(app);
     this.setPlaceholder("Select a file to pull…");
+  }
+
+  private infoEl: HTMLElement | null = null;
+
+  onOpen() {
+    super.onOpen();
+    const parent = this.inputEl.parentElement;
+    if (parent && !this.infoEl) {
+      const info = parent.insertBefore(parent.createDiv(), this.inputEl);
+      info.addClass("pull-dl-legend");
+      this.infoEl = info;
+    }
+    this.updateInfo();
   }
 
   getSuggestions(query: string): DownloadItem[] {
@@ -165,6 +186,13 @@ class DownloadSelectModal extends SuggestModal<DownloadItem> {
 
   onChooseSuggestion(item: DownloadItem) {
     this.onSelect(item);
+  }
+
+  private updateInfo() {
+    if (!this.infoEl) return;
+    const moveCopy = this.settings.behavior === "copy" ? "Copy" : "Move";
+    const zipMode = this.settings.expandZips ? "Extract zips" : "Keep zips intact";
+    this.infoEl.setText(`${moveCopy} • ${zipMode}`);
   }
 }
 
@@ -224,6 +252,19 @@ class PullSettingsTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
+      .setName("Extract zip files")
+      .setDesc("If off, zips are moved/copied without extracting.")
+      .addToggle((toggle) =>
+        toggle
+          .setValue(this.plugin.settings.expandZips)
+          .onChange(async (value) => {
+            this.plugin.settings.expandZips = value;
+            await this.plugin.saveSettings();
+            this.display();
+          })
+      );
+
+    new Setting(containerEl)
       .setName("Whitelist extensions")
       .setDesc(
         "Comma/space separated. If set, only these extensions are shown and blacklist is ignored."
@@ -253,9 +294,15 @@ class PullSettingsTab extends PluginSettingTab {
           })
       );
 
-    new Setting(containerEl)
+    const collisionSetting = new Setting(containerEl)
       .setName("Zip collision handling")
-      .setDesc("Choose how to handle existing files when extracting zips.")
+      .setDesc(
+        this.plugin.settings.expandZips
+          ? "Choose how to handle existing files when extracting zips."
+          : "Enable 'Extract zip files' to configure collision handling."
+      );
+
+    collisionSetting
       .addDropdown((dropdown) =>
         dropdown
           .addOption("version", "Version existing files")
@@ -265,7 +312,8 @@ class PullSettingsTab extends PluginSettingTab {
             this.plugin.settings.zipCollision = value;
             await this.plugin.saveSettings();
           })
-      );
+      )
+      .setDisabled(!this.plugin.settings.expandZips);
   }
 }
 
@@ -305,7 +353,8 @@ function normalizeSettings(settings: PullSettings): PullSettings {
     behavior: settings.behavior === "copy" ? "copy" : "move",
     whitelist: parseExtList(formatExtList(settings.whitelist || [])),
     blacklist: parseExtList(formatExtList(settings.blacklist || [])),
-    zipCollision: settings.zipCollision === "overwrite" ? "overwrite" : "version"
+    zipCollision: settings.zipCollision === "overwrite" ? "overwrite" : "version",
+    expandZips: settings.expandZips !== false
   };
 }
 

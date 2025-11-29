@@ -1,3 +1,9 @@
+.pull-dl-legend {
+  color: var(--text-faint);
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
 .pull-dl-row {
   display: flex;
   align-items: center;
