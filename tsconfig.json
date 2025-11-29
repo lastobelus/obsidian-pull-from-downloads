@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "inlineSourceMap": true,
+    "inlineSources": true,
+    "lib": ["DOM", "ES2021"],
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "target": "ES2021",
+    "strict": true,
+    "jsx": "react",
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "Fragment",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "types": ["node", "obsidian"]
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules"]
+}

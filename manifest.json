@@ -1,0 +1,10 @@
+{
+  "id": "pull-from-downloads",
+  "name": "Pull from Downloads",
+  "version": "1.0.0",
+  "minAppVersion": "1.5.0",
+  "description": "Quickly pull recent files or zips from your Downloads folder into the vault via the file explorer context menu.",
+  "author": "Code (ChatGPT)",
+  "authorUrl": "https://github.com/openai",
+  "isDesktopOnly": true
+}

@@ -1,0 +1,27 @@
+{
+  "name": "pull-from-downloads",
+  "version": "1.0.0",
+  "description": "Obsidian plugin to pull recent files from Downloads into a chosen vault folder.",
+  "main": "main.js",
+  "scripts": {
+    "build": "esbuild main.ts --bundle --outfile=main.js --format=cjs --platform=node --external:obsidian --external:electron --sourcemap=inline",
+    "dev": "npm run build -- --watch"
+  },
+  "keywords": [
+    "obsidian",
+    "plugin",
+    "downloads",
+    "zip"
+  ],
+  "author": "Code (ChatGPT)",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.8.4",
+    "esbuild": "^0.24.0",
+    "obsidian": "^1.6.3",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.12"
+  }
+}
