@@ -14,6 +14,8 @@ Perfect for AI-generated outputs: have your AI tool save a multi-file project as
 ```bash
 npm install
 npm run build
+# optionally install straight into your vault (requires OBSIDIAN_VAULT env var)
+OBSIDIAN_VAULT="/path/to/your/vault" npm run install:local
 ```
 
 Manual install into a vault:
