@@ -1,7 +1,8 @@
 .pull-dl-legend {
   color: var(--text-faint);
   font-size: 12px;
-  margin-bottom: 6px;
+  margin: 4px 0 6px;
+  opacity: 0.85;
 }
 
 .pull-dl-row {
