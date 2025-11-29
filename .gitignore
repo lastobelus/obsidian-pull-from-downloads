@@ -1,0 +1,12 @@
+# Dependencies
+node_modules/
+
+# Build output
+main.js.map
+dist/
+
+# Logs
+*.log
+
+# OS cruft
+.DS_Store
