@@ -20,7 +20,7 @@
 }
 
 .pull-dl-meta {
-  color: var(--text-muted);
+  color: var(--text-faint);
   font-size: 12px;
   margin-top: 2px;
 }
