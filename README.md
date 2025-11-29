@@ -16,6 +16,7 @@ npm install
 npm run build
 # optionally install straight into your vault (requires OBSIDIAN_VAULT env var)
 OBSIDIAN_VAULT="/path/to/your/vault" npm run install:local
+# `~` is supported: OBSIDIAN_VAULT="~/Library/Mobile Documents/com~apple~CloudDocs/ObsidianNotes"
 ```
 
 Manual install into a vault:

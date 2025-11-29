@@ -6,7 +6,7 @@
   "scripts": {
     "build": "esbuild main.ts --bundle --outfile=main.js --format=cjs --platform=node --external:obsidian --external:electron --sourcemap=inline",
     "dev": "npm run build -- --watch",
-    "install:local": "npm run build && node -e \"const fs=require('fs'),path=require('path');const vault=process.env.OBSIDIAN_VAULT; if(!vault){console.error('OBSIDIAN_VAULT not set');process.exit(1);} const dest=path.join(vault,'.obsidian','plugins','pull-from-downloads'); fs.mkdirSync(dest,{recursive:true}); for (const f of ['main.js','manifest.json','styles.css']){fs.copyFileSync(f,path.join(dest,f));} console.log('Installed to',dest);\""
+    "install:local": "npm run build && node -e \"const fs=require('fs'),path=require('path'),os=require('os');const expand=p=>p&&p.startsWith('~')?path.join(os.homedir(),p.slice(1)):p;const raw=process.env.OBSIDIAN_VAULT; if(!raw){console.error('OBSIDIAN_VAULT not set');process.exit(1);} const vault=expand(raw); const dest=path.join(vault,'.obsidian','plugins','pull-from-downloads'); fs.mkdirSync(dest,{recursive:true}); for (const f of ['main.js','manifest.json','styles.css']){fs.copyFileSync(f,path.join(dest,f));} console.log('Installed to',dest);\""
   },
   "keywords": [
     "obsidian",
