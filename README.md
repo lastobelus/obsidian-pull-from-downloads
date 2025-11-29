@@ -1,50 +1,26 @@
-# Pull from Downloads
+## Pull from Downloads — Simple ZIP & File Import for Obsidian
 
-Quickly pull a recent file (or extract a zip) from your Downloads folder into any folder in your Obsidian vault via the file explorer context menu.
+Right‑click any folder → import the most recent item from your Downloads.
+Zips extract automatically. Files move or copy.
 
-Author: Michael Johnston (with codex)
+### Features
+- Right‑click → **Pull from Downloads…**
+- Shows recent downloads (configurable)
+- Auto-extracts ZIPs, preserves structure
+- Move or copy regular files
+- Setting to overwrite or version existing files with same name
+- Whitelist/blacklist extensions
+- Custom source directory
 
-## What it does
-- Adds `Pull from Downloads…` to the file explorer context menu for both folders and files (files use their parent folder).
-- Shows your most recent Downloads (newest first), with optional whitelist/blacklist filters and a configurable list length.
-- Moves (default) or copies the chosen file into the target folder. Zip extraction is optional (on by default); collisions can either be versioned (default) or overwritten.
-- Refreshes the file explorer and shows a brief notice once done. Errors are surfaced with notices.
-
-Perfect for AI-generated outputs: have your AI tool save a multi-file project as a zip in `~/Downloads`, then use this plugin to pull and extract it into the right spot in your vault in two clicks.
-
-## Install & build
-```bash
-npm install
-npm run build
-# optionally install straight into your vault (requires OBSIDIAN_VAULT env var)
-OBSIDIAN_VAULT="/path/to/your/vault" npm run install:local
-# `~` is supported: OBSIDIAN_VAULT="~/Library/Mobile Documents/com~apple~CloudDocs/ObsidianNotes"
+### Installing
+1. Put `main.js`, `manifest.json`, `styles.css` in:
 ```
+<YourVault>/.obsidian/plugins/pull-from-downloads/
+```
+2. Enable it in **Settings → Community plugins**.
 
-Manual install into a vault:
-1. Build as above (produces `main.js`, `manifest.json`, `styles.css`).
-2. Copy these files into `<vault>/.obsidian/plugins/pull-from-downloads/`.
-3. In Obsidian, enable **Pull from Downloads** in Settings → Community Plugins.
+### Perfect for AI ZIPs
+Ask your AI to emit a zip into Downloads, then pull it into your vault in two clicks.
 
-## Usage
-1. Right-click any folder (or file) in the file explorer.
-2. Choose **Pull from Downloads…**.
-3. Pick a recent file. If it’s a zip, it will be extracted into the target folder; otherwise it will be moved (or copied, if you choose that setting).
-
-## Settings
-- **Downloads directory**: default `~/Downloads`; `~` is expanded.
-- **Number of files**: default 10 (1–100).
-- **Behavior**: Move (default) or Copy.
-- **Whitelist extensions**: comma/space separated; if set, only these extensions show and blacklist is ignored.
-- **Blacklist extensions**: comma/space separated; ignored when whitelist is set. Leave whitelist empty to rely on blacklist.
-- **Extract zip files**: on by default; if off, zips are moved/copied as-is.
-- **Zip collision handling**: Version existing files (default) or Overwrite existing files.
-
-### Zip collisions
-When extracting zips, you can choose:
-- **Version existing files** (default): append `-1`, `-2`, … before the extension.
-- **Overwrite existing files**: replace files of the same path.
-
-## Develop
-- `npm run dev` watches and rebuilds.
-- Code lives in `main.ts`; build output is `main.js` at the repo root, matching Obsidian’s expectation.
+### Modest intentions
+This plugin removes tiny points of friction, nothing more.
