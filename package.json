@@ -14,7 +14,7 @@
     "downloads",
     "zip"
   ],
-  "author": "Code (ChatGPT)",
+  "author": "Michael Johnston (with codex)",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^22.8.4",

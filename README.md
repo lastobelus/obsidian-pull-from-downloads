@@ -2,6 +2,8 @@
 
 Quickly pull a recent file (or extract a zip) from your Downloads folder into any folder in your Obsidian vault via the file explorer context menu.
 
+Author: Michael Johnston (with codex)
+
 ## What it does
 - Adds `Pull from Downloads…` to the file explorer context menu for both folders and files (files use their parent folder).
 - Shows your most recent Downloads (newest first), with optional whitelist/blacklist filters and a configurable list length.
