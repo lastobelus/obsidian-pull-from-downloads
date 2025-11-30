@@ -8,7 +8,7 @@
     "dev": "npm run build -- --watch",
     "install:local": "npm run build && node -e \"const fs=require('fs'),path=require('path'),os=require('os');const expand=p=>p&&p.startsWith('~')?path.join(os.homedir(),p.slice(1)):p;const raw=process.env.OBSIDIAN_VAULT; if(!raw){console.error('OBSIDIAN_VAULT not set');process.exit(1);} const vault=expand(raw); const dest=path.join(vault,'.obsidian','plugins','pull-from-downloads'); fs.mkdirSync(dest,{recursive:true}); for (const f of ['main.js','manifest.json','styles.css']){fs.copyFileSync(f,path.join(dest,f));} console.log('Installed to',dest);\"",
     "release": "node scripts/release.js",
-    "lint": "tsc --noEmit"
+    "lint": "eslint . && tsc --noEmit"
   },
   "keywords": [
     "obsidian",
@@ -19,9 +19,13 @@
   "author": "Michael Johnston (with codex)",
   "license": "MIT",
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.3",
     "@types/adm-zip": "^0.5.7",
     "@types/node": "^22.8.4",
+    "@typescript-eslint/parser": "^8.48.0",
     "esbuild": "^0.27.0",
+    "eslint": "^9.39.1",
+    "eslint-plugin-obsidianmd": "^0.1.9",
     "obsidian": "^1.6.3",
     "typescript": "^5.6.3"
   },

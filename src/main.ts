@@ -36,9 +36,9 @@ export default class PullFromDownloadsPlugin extends Plugin {
 
         menu.addItem((item) => {
           item
-            .setTitle("Pull from Downloads…")
+            .setTitle("Pull from downloads…")
             .setIcon("download")
-            .onClick(() => this.handlePull(targetFolder));
+            .onClick(() => void this.handlePull(targetFolder));
         });
       })
     );
@@ -59,7 +59,7 @@ export default class PullFromDownloadsPlugin extends Plugin {
     }
 
     if (candidates.length === 0) {
-      new Notice("No matching files found in Downloads.");
+      new Notice("No matching files found in downloads.");
       return;
     }
 
@@ -76,13 +76,13 @@ export default class PullFromDownloadsPlugin extends Plugin {
   }
 
   private async processSelection(item: DownloadItem, targetFolder: TFolder) {
-    const baseAdapter = this.app.vault.adapter;
-    if (!(baseAdapter as any).getBasePath) {
+    const baseAdapter = this.app.vault.adapter as unknown;
+    if (!(baseAdapter as { getBasePath?: () => string })?.getBasePath) {
       new Notice("File system adapter not available on this platform.");
       return;
     }
 
-    const vaultBase = (baseAdapter as any).getBasePath() as string;
+    const vaultBase = (baseAdapter as { getBasePath: () => string }).getBasePath();
     const targetDir = path.join(vaultBase, normalizePath(targetFolder.path));
 
     try {
@@ -98,9 +98,10 @@ export default class PullFromDownloadsPlugin extends Plugin {
       }
 
       new Notice(`${action} ${item.name} into ${targetFolder.path}`);
-    } catch (error) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
       console.error(error);
-      new Notice(`Pull failed: ${(error as Error).message}`);
+      new Notice(`Pull failed: ${message}`);
     }
   }
 
@@ -133,16 +134,21 @@ class PullSettingsTab extends PluginSettingTab {
     const { containerEl } = this;
     containerEl.empty();
 
-    containerEl.createEl('h1', { text: 'Pull from Downloads' })
+    new Setting(containerEl)
+      .setName('Pull from downloads')
+      .setHeading();
+
     containerEl.createEl('a', { text: 'Created by lastobelus', href: 'https://github.com/lastobelus/' })
 
-    containerEl.createEl('h2', { text: 'Settings' })
+    new Setting(containerEl)
+      .setName('Settings')
+      .setHeading();
     new Setting(containerEl)
       .setName("Downloads directory")
       .setDesc("Path to scan; ~ is expanded.")
       .addText((text) =>
         text
-          .setPlaceholder("~/Downloads")
+      .setPlaceholder("~/downloads")
           .setValue(this.plugin.settings.downloadsDir)
           .onChange(async (value) => {
             this.plugin.settings.downloadsDir = value || DEFAULT_SETTINGS.downloadsDir;
@@ -166,7 +172,7 @@ class PullSettingsTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("Behavior")
-      .setDesc("Move (default) removes from Downloads; Copy leaves it there.")
+      .setDesc("Move (default) removes from downloads; copy leaves it there.")
       .addDropdown((dropdown) =>
         dropdown
           .addOption("move", "Move")
@@ -185,7 +191,7 @@ class PullSettingsTab extends PluginSettingTab {
       )
       .addText((text) =>
         text
-          .setPlaceholder("zip, pdf, png")
+          .setPlaceholder("Zip, PDF, PNG")
           .setValue(formatExtList(this.plugin.settings.whitelist))
           .onChange(async (value) => {
             this.plugin.settings.whitelist = parseExtList(value);
@@ -200,7 +206,7 @@ class PullSettingsTab extends PluginSettingTab {
       )
       .addText((text) =>
         text
-          .setPlaceholder("tmp, crdownload")
+          .setPlaceholder("Tmp, crdownload")
           .setValue(formatExtList(this.plugin.settings.blacklist))
           .onChange(async (value) => {
             this.plugin.settings.blacklist = parseExtList(value);
@@ -208,7 +214,7 @@ class PullSettingsTab extends PluginSettingTab {
           })
       );
 
-    containerEl.createEl("h3", { text: "Zip files" });
+    new Setting(containerEl).setName("Zip files").setHeading();
 
     new Setting(containerEl)
       .setName("Extract zip files")
@@ -313,8 +319,9 @@ async function moveOrCopyFile(source: string, targetDir: string, behavior: "move
 
   try {
     await fsp.rename(source, targetPath);
-  } catch (error: any) {
-    if (error.code === "EXDEV") {
+  } catch (error: unknown) {
+    const err = error as NodeJS.ErrnoException;
+    if (err?.code === "EXDEV") {
       await fsp.copyFile(source, targetPath);
       await fsp.unlink(source);
     } else {
@@ -367,7 +374,7 @@ async function exists(p: string): Promise<boolean> {
   try {
     await fsp.access(p, fs.constants.F_OK);
     return true;
-  } catch (e) {
+  } catch {
     return false;
   }
 }

@@ -39,8 +39,8 @@ export class FuzzyDownloadModal extends FuzzySuggestModal<DownloadItem> {
     renderDownloadRow(match.item, el);
   }
 
-  onChooseItem(item: DownloadItem) {
-    this.onSelect(item);
+  async onChooseItem(item: DownloadItem) {
+    await this.onSelect(item);
   }
 }
 
