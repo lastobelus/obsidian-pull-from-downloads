@@ -1,51 +1,6 @@
-import { App, FuzzyMatch, FuzzySuggestModal, SuggestModal } from "obsidian";
+import { App, FuzzyMatch, FuzzySuggestModal } from "obsidian";
 import * as path from "path";
 import { DownloadItem, PullSettings } from "./pull-types";
-
-export class DownloadSelectModal extends SuggestModal<DownloadItem> {
-  private infoEl: HTMLElement | null = null;
-
-  constructor(
-    app: App,
-    private items: DownloadItem[],
-    private settings: PullSettings,
-    private onSelect: (item: DownloadItem) => void
-  ) {
-    super(app);
-    this.setPlaceholder("Select a file to pull…");
-  }
-
-  onOpen() {
-    super.onOpen();
-    const parent = this.inputEl.parentElement;
-    if (parent && !this.infoEl) {
-      const legend = parent.createDiv({ cls: "pull-dl-legend" });
-      this.inputEl.insertAdjacentElement("afterend", legend);
-      this.infoEl = legend;
-    }
-    this.updateInfo();
-  }
-
-  getSuggestions(query: string): DownloadItem[] {
-    const lowered = query.toLowerCase();
-    return this.items.filter((item) => item.name.toLowerCase().includes(lowered));
-  }
-
-  renderSuggestion(item: DownloadItem, el: HTMLElement) {
-    renderDownloadRow(item, el);
-  }
-
-  onChooseSuggestion(item: DownloadItem) {
-    this.onSelect(item);
-  }
-
-  private updateInfo() {
-    if (!this.infoEl) return;
-    const moveCopy = this.settings.behavior === "copy" ? "Copy Files" : "Move Files";
-    const zipMode = this.settings.expandZips ? "Extract zips" : "Keep zips intact";
-    this.infoEl.setText(`${moveCopy} • ${zipMode}`);
-  }
-}
 
 export class FuzzyDownloadModal extends FuzzySuggestModal<DownloadItem> {
   private infoEl: HTMLElement | null = null;

@@ -48,7 +48,6 @@ To install manually:
 - Downloads directory: default `~/Downloads`; `~` is expanded.
 - Number of files: default 10 (1–100).
 - Behavior: Move (default) or Copy.
-- Selection mode: List (filter as you type) or Fuzzy (quick-switcher style).
 - Whitelist extensions: comma/space separated; if set, only these show and blacklist is ignored.
 - Blacklist extensions: comma/space separated; ignored when whitelist is set. Leave whitelist empty to rely on blacklist.
 - Extract zip files: on by default; if off, zips are moved/copied as-is.
