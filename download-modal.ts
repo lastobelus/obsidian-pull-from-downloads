@@ -1,4 +1,4 @@
-import { App, FuzzySuggestModal, SuggestModal } from "obsidian";
+import { App, FuzzyMatch, FuzzySuggestModal, SuggestModal } from "obsidian";
 import * as path from "path";
 import { DownloadItem, PullSettings } from "./pull-types";
 
@@ -79,8 +79,8 @@ export class FuzzyDownloadModal extends FuzzySuggestModal<DownloadItem> {
     return item.name;
   }
 
-  renderSuggestion(item: DownloadItem, el: HTMLElement) {
-    renderDownloadRow(item, el);
+  renderSuggestion(match: FuzzyMatch<DownloadItem>, el: HTMLElement) {
+    renderDownloadRow(match.item, el);
   }
 
   onChooseItem(item: DownloadItem) {
