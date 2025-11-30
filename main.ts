@@ -92,13 +92,15 @@ export default class PullFromDownloadsPlugin extends Plugin {
       await ensureDir(targetDir);
       const isZip = path.extname(item.name).toLowerCase() === ".zip";
 
+      let action = "Pulled";
       if (isZip && this.settings.expandZips) {
         await extractZip(item.absolutePath, targetDir, this.settings.zipCollision);
+        action = "Expanded";
       } else {
         await moveOrCopyFile(item.absolutePath, targetDir, this.settings.behavior);
       }
 
-      new Notice(`Pulled ${item.name} into ${targetFolder.path}`);
+      new Notice(`${action} ${item.name} into ${targetFolder.path}`);
     } catch (error) {
       console.error(error);
       new Notice(`Pull failed: ${(error as Error).message}`);

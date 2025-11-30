@@ -17,11 +17,11 @@ export class FuzzyDownloadModal extends FuzzySuggestModal<DownloadItem> {
     super.onOpen();
     this.setInstructions([
       {
-        command: "files",
+        command: "files:",
         purpose: this.settings.behavior === "copy" ? "copy" : "move"
       },
       {
-        command: "zip files",
+        command: "zip files:",
         purpose: this.settings.expandZips ? "expand" : "don't expand"
       }
     ]);
