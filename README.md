@@ -24,6 +24,7 @@ Perfect if you often get multi-file ZIPs from AI chat agents, code generators, o
 - Configurable source directory (default: `~/Downloads`)  
 - Handles filename collisions (version or overwrite)
 - Desktop-only: relies on the local Downloads folder; we’re investigating options for mobile.
+- Primarily developed and tested on macOS. If you use Windows or Linux and run into any issues, please open an issue and I’ll fix it.
 
 ---
 
