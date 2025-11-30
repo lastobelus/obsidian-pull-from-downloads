@@ -3,8 +3,6 @@ import * as path from "path";
 import { DownloadItem, PullSettings } from "./pull-types";
 
 export class FuzzyDownloadModal extends FuzzySuggestModal<DownloadItem> {
-  private infoEl: HTMLElement | null = null;
-
   constructor(
     app: App,
     private items: DownloadItem[],
@@ -17,13 +15,16 @@ export class FuzzyDownloadModal extends FuzzySuggestModal<DownloadItem> {
 
   onOpen() {
     super.onOpen();
-    const parent = this.inputEl.parentElement;
-    if (parent && !this.infoEl) {
-      const legend = parent.createDiv({ cls: "pull-dl-legend" });
-      this.inputEl.insertAdjacentElement("afterend", legend);
-      this.infoEl = legend;
-    }
-    this.updateInfo();
+    this.setInstructions([
+      {
+        command: "files",
+        purpose: this.settings.behavior === "copy" ? "copy" : "move"
+      },
+      {
+        command: "zip files",
+        purpose: this.settings.expandZips ? "expand" : "don't expand"
+      }
+    ]);
   }
 
   getItems(): DownloadItem[] {
@@ -40,13 +41,6 @@ export class FuzzyDownloadModal extends FuzzySuggestModal<DownloadItem> {
 
   onChooseItem(item: DownloadItem) {
     this.onSelect(item);
-  }
-
-  private updateInfo() {
-    if (!this.infoEl) return;
-    const moveCopy = this.settings.behavior === "copy" ? "Copy" : "Move";
-    const zipMode = this.settings.expandZips ? "Extract zips" : "Keep zips intact";
-    this.infoEl.setText(`${moveCopy} • ${zipMode}`);
   }
 }
 
