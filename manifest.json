@@ -6,6 +6,5 @@
   "description": "Pull recent files or zips from your Downloads folder into any vault folder via right-click in explorer.",
   "author": "Michael Johnston (with codex)",
   "authorUrl": "https://github.com/lastobelus",
-  "main": "main.js",
   "isDesktopOnly": true
 }
