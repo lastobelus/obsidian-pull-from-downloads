@@ -11,20 +11,17 @@ import {
 import * as path from "path";
 import * as fs from "fs";
 import { promises as fsp } from "fs";
-import * as os from "os";
 import AdmZip from "adm-zip";
 import { DownloadItem, PullSettings } from "./pull-types";
 import { FuzzyDownloadModal } from "./download-modal";
-
-const DEFAULT_SETTINGS: PullSettings = {
-  downloadsDir: "~/Downloads",
-  listLimit: 10,
-  behavior: "move",
-  whitelist: [],
-  blacklist: [],
-  zipCollision: "version",
-  expandZips: true
-};
+import {
+  DEFAULT_SETTINGS,
+  normalizeSettings,
+  parseExtList,
+  formatExtList,
+  clampNumber,
+  expandHome
+} from "./settings";
 
 export default class PullFromDownloadsPlugin extends Plugin {
   settings: PullSettings = { ...DEFAULT_SETTINGS };
@@ -253,41 +250,6 @@ class PullSettingsTab extends PluginSettingTab {
 
 function normalizePath(p: string): string {
   return p.replace(/\\/g, "/");
-}
-
-function expandHome(input: string): string {
-  if (input.startsWith("~")) {
-    return path.join(os.homedir(), input.slice(1));
-  }
-  return input;
-}
-
-function parseExtList(input: string): string[] {
-  return input
-    .split(/[\s,]+/)
-    .map((s) => s.trim().replace(/^\./, "").toLowerCase())
-    .filter(Boolean);
-}
-
-function formatExtList(list: string[]): string {
-  return list.join(", ");
-}
-
-function clampNumber(value: number, min: number, max: number, fallback: number): number {
-  if (Number.isNaN(value)) return fallback;
-  return Math.min(max, Math.max(min, value));
-}
-
-function normalizeSettings(settings: PullSettings): PullSettings {
-  return {
-    downloadsDir: settings.downloadsDir?.trim() || DEFAULT_SETTINGS.downloadsDir,
-    listLimit: clampNumber(settings.listLimit, 1, 100, DEFAULT_SETTINGS.listLimit),
-    behavior: settings.behavior === "copy" ? "copy" : "move",
-    whitelist: parseExtList(formatExtList(settings.whitelist || [])),
-    blacklist: parseExtList(formatExtList(settings.blacklist || [])),
-    zipCollision: settings.zipCollision === "overwrite" ? "overwrite" : "version",
-    expandZips: settings.expandZips !== false
-  };
 }
 
 async function getRecentFiles(dir: string, settings: PullSettings): Promise<DownloadItem[]> {
