@@ -1,6 +1,6 @@
 {
   "name": "pull-from-downloads",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Obsidian plugin to pull recent files from Downloads into a chosen vault folder.",
   "main": "main.js",
   "scripts": {
