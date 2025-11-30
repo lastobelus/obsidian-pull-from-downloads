@@ -2,11 +2,11 @@
   <img src="assets/banner.png" width="800" alt="Pull from Downloads logo" />
 </p>
 
-<h1 align="center">Pull from Downloads — Simple ZIP & File Import for Obsidian</h1>
+<h1 align="center">Pull from Downloads<br><em>Simple ZIP & File Import for Obsidian</em></h1>
 
-<h2 align="center">Right‑click any folder → import the most recent item from your Downloads.</h2>
-
-<h2 align="center">Zips extract automatically. Files move or copy.</h2>
+<h2 align="center">Right‑click any folder → import the most recent item from your Downloads.
+<br><br>
+Zips extract automatically. Files move or copy.</h2>
 
 ---
 
