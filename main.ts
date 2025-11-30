@@ -135,7 +135,10 @@ class PullSettingsTab extends PluginSettingTab {
     containerEl.empty();
 
     containerEl.createEl("h2", { text: "Pull from Downloads" });
+    containerEl.createEl('h1', { text: 'Pull from Downloads' })
+    containerEl.createEl('a', { text: 'Created by lastobelus', href: 'https://github.com/lastobelus/' })
 
+    containerEl.createEl('h2', { text: 'Settings' })
     new Setting(containerEl)
       .setName("Downloads directory")
       .setDesc("Path to scan; ~ is expanded.")
