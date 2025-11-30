@@ -320,6 +320,13 @@ async function getRecentFiles(dir: string, settings: PullSettings): Promise<Down
 }
 
 function shouldInclude(name: string, whitelist: string[], blacklist: string[]): boolean {
+  const ignoredNames = new Set([
+    ".DS_Store",
+    "Thumbs.db",
+    "desktop.ini"
+  ]);
+  if (ignoredNames.has(name)) return false;
+
   const ext = path.extname(name).replace(/^\./, "").toLowerCase();
   if (whitelist.length > 0) {
     return whitelist.includes(ext);
