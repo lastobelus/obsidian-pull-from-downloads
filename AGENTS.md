@@ -256,4 +256,4 @@ this.registerInterval(window.setInterval(() => { /* ... */ }, 1000));
 - Before committing, ensure `npm run lint` passes (run a lint dry-run first if required by automation).
 - Exception for unattended / non-interactive runs (e.g., one-shot `--full-auto`): answer the questions, then proceed automatically without waiting.
 - Use `npm run install:local` with `OBSIDIAN_VAULT` set when installing into a vault.
-- Keep commits conventional; push to `origin/development`.
+- Keep commits conventional; push to `origin/development`. Merge/release from `main`; tags/releases use plain version numbers (no leading `v`).
