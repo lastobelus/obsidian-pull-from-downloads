@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo.png" width="120" alt="Pull from Downloads logo" />
+  <img src="assets/banner.png" width="800" alt="Pull from Downloads logo" />
 </p>
 
 <h1 align="center">Pull from Downloads — Simple ZIP & File Import for Obsidian</h1>
