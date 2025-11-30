@@ -48,9 +48,9 @@ function main() {
     process.exit(1);
   }
 
-  const tag = `v${version}`;
-  const title = tag;
-  const notes = `Release ${tag}`;
+  const tag = version; // use plain version (no leading v) as required by Obsidian directory
+  const title = version;
+  const notes = `Release ${version}`;
 
   run(`gh release create ${tag} ${assets.join(" ")} -t "${title}" -n "${notes}"`);
 
