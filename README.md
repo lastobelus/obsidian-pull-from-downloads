@@ -41,4 +41,32 @@ That’s it. Ideal for AI-generated artifacts: ask your agent to emit a ZIP into
 To install manually:
 
 1. Build the plugin (see below), or download the release assets.  
-2. Copy these three files into your vault at:  
+2. Copy these three files into your vault at: `<vault>/.obsidian/plugins/pull-from-downloads/`  
+3. Reload Obsidian and enable **Pull from Downloads** in Settings → Community Plugins.
+
+### Settings
+- Downloads directory: default `~/Downloads`; `~` is expanded.
+- Number of files: default 10 (1–100).
+- Behavior: Move (default) or Copy.
+- Selection mode: List (filter as you type) or Fuzzy (quick-switcher style).
+- Whitelist extensions: comma/space separated; if set, only these show and blacklist is ignored.
+- Blacklist extensions: comma/space separated; ignored when whitelist is set. Leave whitelist empty to rely on blacklist.
+- Extract zip files: on by default; if off, zips are moved/copied as-is.
+- Zip collision handling: Version existing files (default) or Overwrite existing files.
+
+### Build
+
+```bash
+npm install
+npm run build
+```
+
+Optional: install directly into a vault (after build):
+
+```bash
+OBSIDIAN_VAULT="/absolute/path/to/your/vault" npm run install:local
+```
+
+### Release
+- Bump version in `manifest.json` (and `package.json` if desired).
+- Run `npm run release -- <version>` to build, update `versions.json`, and publish a GitHub release with assets.

@@ -6,6 +6,7 @@ export interface PullSettings {
   blacklist: string[];
   zipCollision: "version" | "overwrite";
   expandZips: boolean;
+  selectionMode: "list" | "fuzzy";
 }
 
 export interface DownloadItem {

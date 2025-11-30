@@ -14,7 +14,7 @@ import { promises as fsp } from "fs";
 import * as os from "os";
 import AdmZip from "adm-zip";
 import { DownloadItem, PullSettings } from "./pull-types";
-import { DownloadSelectModal } from "./download-modal";
+import { DownloadSelectModal, FuzzyDownloadModal } from "./download-modal";
 
 const DEFAULT_SETTINGS: PullSettings = {
   downloadsDir: "~/Downloads",
@@ -23,7 +23,8 @@ const DEFAULT_SETTINGS: PullSettings = {
   whitelist: [],
   blacklist: [],
   zipCollision: "version",
-  expandZips: true
+  expandZips: true,
+  selectionMode: "list"
 };
 
 export default class PullFromDownloadsPlugin extends Plugin {
@@ -66,7 +67,10 @@ export default class PullFromDownloadsPlugin extends Plugin {
       return;
     }
 
-    const modal = new DownloadSelectModal(
+    const modalClass =
+      this.settings.selectionMode === "fuzzy" ? FuzzyDownloadModal : DownloadSelectModal;
+
+    const modal = new modalClass(
       this.app,
       candidates,
       this.settings,
@@ -134,7 +138,6 @@ class PullSettingsTab extends PluginSettingTab {
     const { containerEl } = this;
     containerEl.empty();
 
-    containerEl.createEl("h2", { text: "Pull from Downloads" });
     containerEl.createEl('h1', { text: 'Pull from Downloads' })
     containerEl.createEl('a', { text: 'Created by lastobelus', href: 'https://github.com/lastobelus/' })
 
@@ -176,6 +179,20 @@ class PullSettingsTab extends PluginSettingTab {
           .setValue(this.plugin.settings.behavior)
           .onChange(async (value) => {
             this.plugin.settings.behavior = value as "move" | "copy";
+            await this.plugin.saveSettings();
+          })
+      );
+
+    new Setting(containerEl)
+      .setName("Selection mode")
+      .setDesc("Choose the picker style: list filter or fuzzy search.")
+      .addDropdown((dropdown) =>
+        dropdown
+          .addOption("list", "List (filter as you type)")
+          .addOption("fuzzy", "Fuzzy (Quick Switcher style)")
+          .setValue(this.plugin.settings.selectionMode)
+          .onChange(async (value) => {
+            this.plugin.settings.selectionMode = value as "list" | "fuzzy";
             await this.plugin.saveSettings();
           })
       );
@@ -285,7 +302,8 @@ function normalizeSettings(settings: PullSettings): PullSettings {
     whitelist: parseExtList(formatExtList(settings.whitelist || [])),
     blacklist: parseExtList(formatExtList(settings.blacklist || [])),
     zipCollision: settings.zipCollision === "overwrite" ? "overwrite" : "version",
-    expandZips: settings.expandZips !== false
+    expandZips: settings.expandZips !== false,
+    selectionMode: settings.selectionMode === "fuzzy" ? "fuzzy" : "list"
   };
 }
 

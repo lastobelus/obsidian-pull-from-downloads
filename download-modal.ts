@@ -1,4 +1,4 @@
-import { App, SuggestModal } from "obsidian";
+import { App, FuzzySuggestModal, SuggestModal } from "obsidian";
 import * as path from "path";
 import { DownloadItem, PullSettings } from "./pull-types";
 
@@ -32,23 +32,58 @@ export class DownloadSelectModal extends SuggestModal<DownloadItem> {
   }
 
   renderSuggestion(item: DownloadItem, el: HTMLElement) {
-    const row = el.createDiv({ cls: "pull-dl-row" });
-    const nameEl = row.createDiv({ cls: "pull-dl-name" });
-    nameEl.setText(item.name);
-
-    const ext = path.extname(item.name).replace(/^\./, "").toUpperCase();
-    if (ext) {
-      const badge = row.createDiv({ cls: "pull-dl-badge" });
-      badge.setText(ext);
-    }
-
-    const meta = el.createDiv({ cls: "pull-dl-meta" });
-    meta.setText(
-      `${formatRelative(item.mtime)} • ${item.mtime.toLocaleString()} • ${formatBytes(item.size)}`
-    );
+    renderDownloadRow(item, el);
   }
 
   onChooseSuggestion(item: DownloadItem) {
+    this.onSelect(item);
+  }
+
+  private updateInfo() {
+    if (!this.infoEl) return;
+    const moveCopy = this.settings.behavior === "copy" ? "Copy Files" : "Move Files";
+    const zipMode = this.settings.expandZips ? "Extract zips" : "Keep zips intact";
+    this.infoEl.setText(`${moveCopy} • ${zipMode}`);
+  }
+}
+
+export class FuzzyDownloadModal extends FuzzySuggestModal<DownloadItem> {
+  private infoEl: HTMLElement | null = null;
+
+  constructor(
+    app: App,
+    private items: DownloadItem[],
+    private settings: PullSettings,
+    private onSelect: (item: DownloadItem) => void
+  ) {
+    super(app);
+    this.setPlaceholder("Select a file to pull…");
+  }
+
+  onOpen() {
+    super.onOpen();
+    const parent = this.inputEl.parentElement;
+    if (parent && !this.infoEl) {
+      const legend = parent.createDiv({ cls: "pull-dl-legend" });
+      this.inputEl.insertAdjacentElement("afterend", legend);
+      this.infoEl = legend;
+    }
+    this.updateInfo();
+  }
+
+  getItems(): DownloadItem[] {
+    return this.items;
+  }
+
+  getItemText(item: DownloadItem): string {
+    return item.name;
+  }
+
+  renderSuggestion(item: DownloadItem, el: HTMLElement) {
+    renderDownloadRow(item, el);
+  }
+
+  onChooseItem(item: DownloadItem) {
     this.onSelect(item);
   }
 
@@ -58,6 +93,23 @@ export class DownloadSelectModal extends SuggestModal<DownloadItem> {
     const zipMode = this.settings.expandZips ? "Extract zips" : "Keep zips intact";
     this.infoEl.setText(`${moveCopy} • ${zipMode}`);
   }
+}
+
+function renderDownloadRow(item: DownloadItem, el: HTMLElement) {
+  const row = el.createDiv({ cls: "pull-dl-row" });
+  const nameEl = row.createDiv({ cls: "pull-dl-name" });
+  nameEl.setText(item.name);
+
+  const ext = path.extname(item.name).replace(/^\./, "").toUpperCase();
+  if (ext) {
+    const badge = row.createDiv({ cls: "pull-dl-badge" });
+    badge.setText(ext);
+  }
+
+  const meta = el.createDiv({ cls: "pull-dl-meta" });
+  meta.setText(
+    `${formatRelative(item.mtime)} • ${item.mtime.toLocaleString()} • ${formatBytes(item.size)}`
+  );
 }
 
 function formatBytes(bytes: number): string {
